@@ -53,9 +53,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func chooseNextKey() {
         let shift = arc4random_uniform(26)
-        let char = Character(UnicodeScalar(("A" as UnicodeScalar).value + shift)!)
+        let char = Character(UnicodeScalar(("a" as UnicodeScalar).value + shift)!)
         if let label = self.label {
-            label.text = String(char)
+            label.text = String(char).uppercased()
             label.run(SKAction.fadeIn(withDuration: 2.0))
             self.currentCharacter = char
         }
@@ -72,16 +72,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     override func keyDown(with event: NSEvent) {
-        switch event.keyCode {
-        case 0x31:
-            if let jetWoman = self.jetWoman {
-                jetWoman.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 200))
-                score += 1
-                updateScoreLabel()
-                chooseNextKey()
+        if let chars = event.characters {
+            if let currentChar = self.currentCharacter {
+                print(chars)
+                print(currentChar)
+                if chars.contains(currentChar) {
+                    if let jetWoman = self.jetWoman {
+                        jetWoman.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 200))
+                        score += 1
+                        updateScoreLabel()
+                        chooseNextKey()
+                    }
+                }
             }
-        default:
-            print("keyDown: \(event.characters!) keyCode: \(event.keyCode)")
         }
     }
     
