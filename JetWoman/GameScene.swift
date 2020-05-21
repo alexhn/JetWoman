@@ -13,6 +13,7 @@ class GameScene: SKScene {
     
     private var label : SKLabelNode?
     private var spinnyNode : SKShapeNode?
+    private var jetWoman: SKSpriteNode?
     
     override func didMove(to view: SKView) {
         
@@ -22,6 +23,8 @@ class GameScene: SKScene {
             label.alpha = 0.0
             label.run(SKAction.fadeIn(withDuration: 2.0))
         }
+        
+        self.jetWoman = self.childNode(withName: "//jetwoman") as? SKSpriteNode
         
         // Create shape node to use during mouse interaction
         let w = (self.size.width + self.size.height) * 0.05
@@ -77,8 +80,8 @@ class GameScene: SKScene {
     override func keyDown(with event: NSEvent) {
         switch event.keyCode {
         case 0x31:
-            if let label = self.label {
-                label.run(SKAction.init(named: "Pulse")!, withKey: "fadeInOut")
+            if let jetWoman = self.jetWoman {
+                jetWoman.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 200))
             }
         default:
             print("keyDown: \(event.characters!) keyCode: \(event.keyCode)")
