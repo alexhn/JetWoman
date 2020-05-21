@@ -20,6 +20,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var highscoreLabel: SKLabelNode?
     private var jetWoman: SKSpriteNode?
     private var startButton: SKSpriteNode?
+    private var crashFire: SKNode?
     private var score = 0
     private var gameFinished = true
     
@@ -31,6 +32,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.label = self.childNode(withName: "//helloLabel") as? SKLabelNode
         self.scorelabel = self.childNode(withName: "//scorelabel") as? SKLabelNode
         self.highscoreLabel = self.childNode(withName: "//highscorelabel") as? SKLabelNode
+        self.crashFire = self.childNode(withName: "//crashfire")
+        self.crashFire?.alpha = 0.0
         
         if let label = self.label {
             label.alpha = 0.0
@@ -71,6 +74,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             jetWoman.position = CGPoint(x: 0, y: 90)
             jetWoman.physicsBody?.pinned = false
             gameFinished = false
+             self.crashFire?.alpha = 0
             score = 0
             chooseNextKey()
             updateScoreLabel()
@@ -112,6 +116,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if bodyA.categoryBitMask == spikesCategory || bodyB.categoryBitMask == spikesCategory {
             if (!gameFinished) {
                 gameFinished = true
+                self.crashFire?.alpha = 1.0
                 currentCharacter = nil
                 self.label?.text = ""
                 if let startButton = self.startButton {
