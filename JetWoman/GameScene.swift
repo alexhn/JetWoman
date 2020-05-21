@@ -15,8 +15,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let spikesCategory : UInt32 = 3
     
     private var label : SKLabelNode?
-    private var spinnyNode : SKShapeNode?
     private var jetWoman: SKSpriteNode?
+    private var startButton: SKSpriteNode?
     
     override func didMove(to view: SKView) {
         
@@ -30,56 +30,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         
         self.jetWoman = self.childNode(withName: "//jetwoman") as? SKSpriteNode
+        self.startButton = self.childNode(withName: "//startbutton") as? SKSpriteNode
         
-        // Create shape node to use during mouse interaction
-        let w = (self.size.width + self.size.height) * 0.05
-        self.spinnyNode = SKShapeNode.init(rectOf: CGSize.init(width: w, height: w), cornerRadius: w * 0.3)
-        
-        if let spinnyNode = self.spinnyNode {
-            spinnyNode.lineWidth = 2.5
-            
-            spinnyNode.run(SKAction.repeatForever(SKAction.rotate(byAngle: CGFloat(Double.pi), duration: 1)))
-            spinnyNode.run(SKAction.sequence([SKAction.wait(forDuration: 0.5),
-                                              SKAction.fadeOut(withDuration: 0.5),
-                                              SKAction.removeFromParent()]))
-        }
-    }
-    
-    
-    func touchDown(atPoint pos : CGPoint) {
-        if let n = self.spinnyNode?.copy() as! SKShapeNode? {
-            n.position = pos
-            n.strokeColor = SKColor.green
-            self.addChild(n)
-        }
-    }
-    
-    func touchMoved(toPoint pos : CGPoint) {
-        if let n = self.spinnyNode?.copy() as! SKShapeNode? {
-            n.position = pos
-            n.strokeColor = SKColor.blue
-            self.addChild(n)
-        }
-    }
-    
-    func touchUp(atPoint pos : CGPoint) {
-        if let n = self.spinnyNode?.copy() as! SKShapeNode? {
-            n.position = pos
-            n.strokeColor = SKColor.red
-            self.addChild(n)
-        }
     }
     
     override func mouseDown(with event: NSEvent) {
-        self.touchDown(atPoint: event.location(in: self))
-    }
-    
-    override func mouseDragged(with event: NSEvent) {
-        self.touchMoved(toPoint: event.location(in: self))
-    }
-    
-    override func mouseUp(with event: NSEvent) {
-        self.touchUp(atPoint: event.location(in: self))
+        let point = event.location(in: self)
+        let nodesAtPoint = nodes(at: point)
+        for node in nodesAtPoint {
+            if node.name == "startbutton" {
+                if let jetWoman = self.jetWoman {
+                    jetWoman.physicsBody?.pinned = false
+                    node.removeFromParent()
+                }
+            }
+        }
     }
     
     override func keyDown(with event: NSEvent) {
