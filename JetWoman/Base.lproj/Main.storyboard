@@ -59,6 +59,7 @@
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <menu key="submenu" title="Game" id="bib-Uj-vzu">
                                     <items>
+                                        <menuItem title="Reset High Score" keyEquivalent="r" id="XDW-UQ-kbK"/>
                                         <menuItem title="Close" keyEquivalent="w" id="DVo-aG-piG">
                                             <connections>
                                                 <action selector="performClose:" target="Ady-hI-5gd" id="HmO-Ls-i7Q"/>
