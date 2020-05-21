@@ -14,6 +14,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let jetWomanCategory : UInt32 = 2
     let spikesCategory : UInt32 = 3
     
+    private var currentCharacter: Character?
     private var label : SKLabelNode?
     private var scorelabel: SKLabelNode?
     private var jetWoman: SKSpriteNode?
@@ -31,7 +32,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         if let label = self.label {
             label.alpha = 0.0
-            label.run(SKAction.fadeIn(withDuration: 2.0))
+           // label.run(SKAction.fadeIn(withDuration: 2.0))
         }
         
         self.jetWoman = self.childNode(withName: "//jetwoman") as? SKSpriteNode
@@ -50,12 +51,23 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
+    func chooseNextKey() {
+        let shift = arc4random_uniform(26)
+        let char = Character(UnicodeScalar(("A" as UnicodeScalar).value + shift)!)
+        if let label = self.label {
+            label.text = String(char)
+            label.run(SKAction.fadeIn(withDuration: 2.0))
+            self.currentCharacter = char
+        }
+    }
+    
     func startGame() {
         if let jetWoman = self.jetWoman {
             jetWoman.position = CGPoint(x: 0, y: 90)
             jetWoman.physicsBody?.pinned = false
             gameFinished = false
             score = 0
+            chooseNextKey()
             updateScoreLabel()
         }
     }
@@ -66,6 +78,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 jetWoman.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 200))
                 score += 1
                 updateScoreLabel()
+                chooseNextKey()
             }
         default:
             print("keyDown: \(event.characters!) keyCode: \(event.keyCode)")
@@ -79,8 +92,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func didBegin(_ contact: SKPhysicsContact) {
         let bodyA = contact.bodyA
         let bodyB = contact.bodyB
-        if bodyA.categoryBitMask == spikesCategory || bodyB.categoryBitMask == spikesCategory
-        {
+        if bodyA.categoryBitMask == spikesCategory || bodyB.categoryBitMask == spikesCategory {
             if (!gameFinished) {
                 gameFinished = true
                 if let startButton = self.startButton {
