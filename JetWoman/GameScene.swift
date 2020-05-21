@@ -17,6 +17,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var currentCharacter: Character?
     private var label : SKLabelNode?
     private var scorelabel: SKLabelNode?
+    private var highscoreLabel: SKLabelNode?
     private var jetWoman: SKSpriteNode?
     private var startButton: SKSpriteNode?
     private var score = 0
@@ -29,6 +30,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // Get label node from scene and store it for use later
         self.label = self.childNode(withName: "//helloLabel") as? SKLabelNode
         self.scorelabel = self.childNode(withName: "//scorelabel") as? SKLabelNode
+        self.highscoreLabel = self.childNode(withName: "//highscorelabel") as? SKLabelNode
         
         if let label = self.label {
             label.alpha = 0.0
@@ -37,6 +39,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         self.jetWoman = self.childNode(withName: "//jetwoman") as? SKSpriteNode
         self.startButton = self.childNode(withName: "//startbutton") as? SKSpriteNode
+        
+        let highscore = UserDefaults.standard.integer(forKey: "highscore")
+        highscoreLabel?.text = "High: \(highscore)"
         
     }
     
@@ -72,13 +77,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     override func keyDown(with event: NSEvent) {
+        if (gameFinished) {
+            return;
+        }
         if let chars = event.characters {
             if let currentChar = self.currentCharacter {
                 print(chars)
                 print(currentChar)
                 if chars.contains(currentChar) {
                     if let jetWoman = self.jetWoman {
-                        jetWoman.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 200))
+                        jetWoman.physicsBody?.applyImpulse(CGVector(dx: 0, dy: (200 - score*5)))
                         score += 1
                         updateScoreLabel()
                         chooseNextKey()
@@ -98,9 +106,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if bodyA.categoryBitMask == spikesCategory || bodyB.categoryBitMask == spikesCategory {
             if (!gameFinished) {
                 gameFinished = true
+                currentCharacter = nil
+                self.label?.text = ""
                 if let startButton = self.startButton {
                     addChild(startButton)
                 }
+                // check if high score
+                let highscore = UserDefaults.standard.integer(forKey: "highscore")
+                if score > highscore {
+                    UserDefaults.standard.set(score, forKey: "highscore")
+                    UserDefaults.standard.synchronize()
+                    highscoreLabel?.text = "High: \(score)"
+                }
+                
             }
         }
     }
