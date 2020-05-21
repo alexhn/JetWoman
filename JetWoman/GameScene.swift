@@ -9,13 +9,18 @@
 import SpriteKit
 import GameplayKit
 
-class GameScene: SKScene {
+class GameScene: SKScene, SKPhysicsContactDelegate {
+    
+    let jetWomanCategory : UInt32 = 2
+    let spikesCategory : UInt32 = 3
     
     private var label : SKLabelNode?
     private var spinnyNode : SKShapeNode?
     private var jetWoman: SKSpriteNode?
     
     override func didMove(to view: SKView) {
+        
+        self.physicsWorld.contactDelegate = self
         
         // Get label node from scene and store it for use later
         self.label = self.childNode(withName: "//helloLabel") as? SKLabelNode
@@ -88,6 +93,14 @@ class GameScene: SKScene {
         }
     }
     
+    func didBegin(_ contact: SKPhysicsContact) {
+        let bodyA = contact.bodyA
+        let bodyB = contact.bodyB
+        if bodyA.categoryBitMask == spikesCategory || bodyB.categoryBitMask == spikesCategory
+        {
+           print("Ran into spikes!")
+        }
+    }
     
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
