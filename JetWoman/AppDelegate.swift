@@ -22,7 +22,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     @IBAction func resetScoreClicked(_ sender: Any) {
-        print("Reset clicked")
+        UserDefaults.standard.set(0, forKey: "highscore")
+        UserDefaults.standard.synchronize()
+        if let viewController = NSApplication.shared.windows.first?.contentViewController as? ViewController {
+
+            if let scene = viewController.skView.scene as? GameScene {
+                scene.updateHighscore()
+            }
+        }
+        
     }
     
 }

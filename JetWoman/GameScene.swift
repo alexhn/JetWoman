@@ -76,6 +76,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             updateScoreLabel()
         }
     }
+    
+    func updateHighscore() {
+        let highscore = UserDefaults.standard.integer(forKey: "highscore")
+        highscoreLabel?.text = "High: \(highscore)"
+    }
+    
     override func keyDown(with event: NSEvent) {
         if (gameFinished) {
             return;
